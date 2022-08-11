@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="LimeC 2.0:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/LimeC_2_0_jar</output-path>
+    <root id="archive" name="LimeC 2.0.jar">
+      <element id="module-output" name="LimeC 2.0" />
+    </root>
+  </artifact>
+</component>

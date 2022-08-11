@@ -1,0 +1,5 @@
+
+# Library for using LimeC as a runtime program
+# Made by LimoDerEchte
+
+compFunc "print string"

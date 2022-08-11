@@ -1,0 +1,7 @@
+
+# Library for using LimeC for CHUNGUS 2
+# Made by LimoDerEchte
+
+compFunc "printLine byte string"
+compFunc "clearCharDisplay"
+compFunc "clearDisplay"
