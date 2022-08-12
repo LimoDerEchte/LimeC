@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: pl.joegreen:lambda-from-string:1.7">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/pl/joegreen/lambda-from-string/1.7/lambda-from-string-1.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/pl/joegreen/lambda-from-string/1.7/lambda-from-string-1.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/pl/joegreen/lambda-from-string/1.7/lambda-from-string-1.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

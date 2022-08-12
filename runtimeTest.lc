@@ -4,3 +4,16 @@ include "libs/runtime"
 
 # Printing to Console
 print "Hello Son"
+
+# Using variables
+var test = "Hello"
+dis test
+
+# Using Java code
+useASM
+javax.swing.JFrame frame = new javax.swing.JFrame("Lol");
+frame.setSize(300, 300);
+frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+frame.add(new javax.swing.JLabel("Hello"));
+frame.setVisible(true);
+endASM
