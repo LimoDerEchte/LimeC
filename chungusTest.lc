@@ -1,11 +1,9 @@
 
 # Including Libs (At the top of the file)
-#include "libs/chungus2"
-include "libs/runtime"
+include "libs/chungus2"
 
 # Using included functions
-#printLine 1 "Hello"
-print "Lol"
+printLine 1 "Hello"
 
 # Allocating and disposing variables
 var test1 = "Lol"
@@ -14,7 +12,7 @@ dis test1
 dis test2
 
 # Using actual assembly code that gets sent straight into the assembly file
-#useASM
-#LIM R0, 'F'
-#PST R0, 71
-#endASM
+useASM
+LIM R0, 'F'
+PST R0, 71
+endASM
