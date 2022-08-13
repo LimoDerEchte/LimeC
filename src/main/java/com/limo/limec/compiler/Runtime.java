@@ -21,7 +21,7 @@ public class Runtime implements Compiler {
                 case "CompilerNode" -> {
                     Nodes.CompilerNode cn = (Nodes.CompilerNode) node;
                     if ("print".equals(cn.name())) {
-                        System.out.println(cn.args()[0]);
+                        System.out.println(buildStringNode((Nodes.StringNode) cn.args()[0]));
                     } else {
                         System.out.println("Compiler Function doesn't exist: " + cn.name());
                     }
@@ -46,6 +46,22 @@ public class Runtime implements Compiler {
                 default -> System.out.println("Node type not available for runtime: " + nodeType);
             }
         }
+    }
+
+    private String buildStringNode(Nodes.StringNode node) {
+        String build = "";
+        for(Nodes.Node n : node.value()) {
+            if(n instanceof Nodes.CharNode) {
+                build += ((Nodes.CharNode)n).value();
+            } else if (n instanceof Nodes.VariableUseNode) {
+                Nodes.Node vun = vars.get(((Nodes.VariableUseNode) n).name());
+                if(vun instanceof Nodes.StringNode)
+                    build += buildStringNode((Nodes.StringNode) vun);
+                else if(vun instanceof Nodes.ByteNode)
+                    build += String.valueOf(((Nodes.ByteNode)vun).value());
+            }
+        }
+        return build;
     }
 
     private void runCode(String text) {

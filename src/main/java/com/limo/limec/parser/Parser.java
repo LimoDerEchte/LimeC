@@ -124,17 +124,17 @@ public class Parser {
     }
 
     public void parseCompFuncUse(String tmp) throws Exception.ParsingException {
-        List<Object> objects = new ArrayList<>();
+        List<Nodes.Node> objects = new ArrayList<>();
         for (String type : compFuncs.get(tmp)) {
             skipSpaces();
             if(type.equalsIgnoreCase("string"))
                 if(chars[index] == '"')
-                    objects.add(parseString());
+                    objects.add(new Nodes.StringNode("", parseNodeString()));
                 else
                     throw new Exception.ParsingException("A string has to start with a '\"'");
             else if(type.equalsIgnoreCase("byte")) {
                 if(numberRegex.contains(chars[index]))
-                    objects.add(parseNumber());
+                    objects.add(new Nodes.ByteNode("", parseNumber()));
                 else
                     throw new Exception.ParsingException("An argument of a function had a wrong argument type");
             }
@@ -144,7 +144,7 @@ public class Parser {
         }
         if(objects.size() != compFuncs.get(tmp).length)
             throw new Exception.ParsingException("Invalid arguments for compiler function '%s'".formatted(tmp));
-        Object[] objs = new Object[objects.size()];
+        Nodes.Node[] objs = new Nodes.Node[objects.size()];
         objects.toArray(objs);
         nodes.add(new Nodes.CompilerNode(tmp, objs));
     }
@@ -213,7 +213,7 @@ public class Parser {
             if(wasEqualsChar) {
                 if(chars[index] != ' ') {
                     if(chars[index] == '"') {
-                        nodes.add(new Nodes.StringNode(name, parseString()));
+                        nodes.add(new Nodes.StringNode(name, parseNodeString()));
                         return;
                     }else if(numberRegex.contains(chars[index])) {
                         int val = parseNumber();
@@ -233,6 +233,30 @@ public class Parser {
             index++;
         }
         throw new Exception.ParsingException("A variable definition is invalid");
+    }
+
+    public Nodes.Node[] parseNodeString() throws Exception.ParsingException {
+        List<Nodes.Node> nodes = new ArrayList<>();
+        String text = parseString();
+        boolean inVarParse = false;
+        String varName = "";
+        for(char c : text.toCharArray()) {
+            if(!inVarParse && c == '%') {
+                inVarParse = true;
+                varName = "";
+            }else if(inVarParse && c == '%') {
+                inVarParse = false;
+                nodes.add(new Nodes.VariableUseNode(varName));
+            }else if(inVarParse)
+                varName += c;
+            else
+                nodes.add(new Nodes.CharNode("", c));
+        }
+        if(inVarParse)
+            throw new Exception.ParsingException("A variable use has to end with a '%'");
+        Nodes.Node[] ret = new Nodes.Node[nodes.size()];
+        nodes.toArray(ret);
+        return ret;
     }
 
     public String parseString() throws Exception.ParsingException {
