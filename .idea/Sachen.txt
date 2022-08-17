@@ -1,0 +1,12 @@
+[X] Basic Parser
+[X] Runtime Compiler
+[ ] CHUNGUS 2 Compiler
+[ ] URCL Compiler
+
+[X] Variables
+[X] Compiler Functions
+[ ] Compiled Keyword
+[ ] Functions
+[X] Assembly Regions
+[ ] If statements
+[...] Loops

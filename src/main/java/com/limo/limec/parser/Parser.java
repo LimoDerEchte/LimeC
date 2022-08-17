@@ -39,6 +39,10 @@ public class Parser {
         }
     }
 
+    public void addNode(Node n) {
+
+    } 
+
     public void includeParse(List<String> input) throws Exception.ParsingException {
         List<Exception.ParsingException> exceptions = new ArrayList<>();
         for (String line : input) {
@@ -112,7 +116,11 @@ public class Parser {
                     asmArea = true;
                     break;
                 case "endASM":
-                    throw new Exception.ParsingException("You cant use 'endasm' outside an asm block");
+                    throw new Exception.ParsingException("You cant use 'endasm' outside of an asm block");
+                case "loop":
+                    break;
+                case "endloop":
+                    throw new Exception.ParsingException("You cant use 'endloop' outside of a loop block");
                 default:
                     if(compFuncs.containsKey(tmp)) {
                         parseCompFuncUse(tmp);
@@ -120,6 +128,13 @@ public class Parser {
                         throw new Exception.ParsingException("Unknown function: " + tmp);
             }
             includeSection = include;
+        }
+    }
+
+    public void parseLoop() throws Exception.ParsingException {
+        skipSpaces();
+        if(numberRegex.contains(chars[index])) {
+            Nodes.Node num = parseNumber();
         }
     }
 
