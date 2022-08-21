@@ -21,3 +21,8 @@ endASM
 # Using variables in Strings
 var name = "John"
 print "Hello, %name%!"
+
+# Using loops
+loop 5
+print "Loop!"
+endloop

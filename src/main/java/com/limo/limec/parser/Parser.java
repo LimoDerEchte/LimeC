@@ -16,7 +16,7 @@ public class Parser {
     private String libPath;
     private boolean asmArea;
     private List<String> asmLines = new ArrayList<>();
-    public List<Nodes.Node> nodes;
+    public List<Nodes.Node> nodes = new ArrayList<>();
 
     public void parse(List<String> input, String libPath) {
         this.libPath = libPath;
@@ -39,8 +39,18 @@ public class Parser {
         }
     }
 
-    public void addNode(Node n) {
-
+    public void addNode(Nodes.Node n) throws Exception.ParsingException {
+        if(nodes.size() == 0) {
+            nodes.add(n);
+            return;
+        }
+        Nodes.Node lastNode = nodes.get(nodes.size() - 1);
+        if(lastNode instanceof Nodes.LoopNode && !((Nodes.LoopNode)lastNode).hasEnded) {
+            ((Nodes.LoopNode)lastNode).addNode(n);
+        }else if(n instanceof Nodes.EndLoopNode) {
+            throw new Exception.ParsingException("You cant use 'endloop' outside of a loop");
+        }else
+            nodes.add(n);
     } 
 
     public void includeParse(List<String> input) throws Exception.ParsingException {
@@ -77,7 +87,7 @@ public class Parser {
                 asmArea = false;
                 String[] asm = new String[asmLines.size()];
                 asmLines.toArray(asm);
-                nodes.add(new Nodes.PureASM(asm));
+                addNode(new Nodes.PureASM(asm));
             }else
                 asmLines.add(l);
         }else {
@@ -110,7 +120,7 @@ public class Parser {
                     parseCompilerFunction();
                     break;
                 case "end":
-                    nodes.add(new Nodes.EndNode());
+                    addNode(new Nodes.EndNode());
                     break;
                 case "useASM":
                     asmArea = true;
@@ -118,9 +128,11 @@ public class Parser {
                 case "endASM":
                     throw new Exception.ParsingException("You cant use 'endasm' outside of an asm block");
                 case "loop":
+                    parseLoop();
                     break;
                 case "endloop":
-                    throw new Exception.ParsingException("You cant use 'endloop' outside of a loop block");
+                    addNode(new Nodes.EndLoopNode());
+                    break;
                 default:
                     if(compFuncs.containsKey(tmp)) {
                         parseCompFuncUse(tmp);
@@ -134,8 +146,10 @@ public class Parser {
     public void parseLoop() throws Exception.ParsingException {
         skipSpaces();
         if(numberRegex.contains(chars[index])) {
-            Nodes.Node num = parseNumber();
-        }
+            int num = parseNumber();
+            addNode(new Nodes.LoopNode(num));
+        }else
+            throw new Exception.ParsingException("Please define a loop amount");
     }
 
     public void parseCompFuncUse(String tmp) throws Exception.ParsingException {
@@ -161,7 +175,7 @@ public class Parser {
             throw new Exception.ParsingException("Invalid arguments for compiler function '%s'".formatted(tmp));
         Nodes.Node[] objs = new Nodes.Node[objects.size()];
         objects.toArray(objs);
-        nodes.add(new Nodes.CompilerNode(tmp, objs));
+        addNode(new Nodes.CompilerNode(tmp, objs));
     }
 
     public void parseCompilerFunction() throws Exception.ParsingException {
@@ -217,7 +231,7 @@ public class Parser {
         }
         if(text.isEmpty())
             throw new Exception.ParsingException("Dispose has to be used with a variable name");
-        nodes.add(new Nodes.DisposeNode(text));
+        addNode(new Nodes.DisposeNode(text));
     }
 
     public void parseVar() throws Exception.ParsingException {
@@ -228,12 +242,12 @@ public class Parser {
             if(wasEqualsChar) {
                 if(chars[index] != ' ') {
                     if(chars[index] == '"') {
-                        nodes.add(new Nodes.StringNode(name, parseNodeString()));
+                        addNode(new Nodes.StringNode(name, parseNodeString()));
                         return;
                     }else if(numberRegex.contains(chars[index])) {
                         int val = parseNumber();
                         if(val >= 0 && val < 256) {
-                            nodes.add(new Nodes.ByteNode(name, val));
+                            addNode(new Nodes.ByteNode(name, val));
                             return;
                         }
                         throw new Exception.ParsingException("Bytes have to be a value between 0 and 255");
