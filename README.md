@@ -23,6 +23,11 @@ var name = "John"
 print "Hello, %name%!"
 dis name
 
+# Using loops
+loop 5
+print "Loop!"
+endloop
+
 # Using Java code (useASM starts an assembly code block & the runtime compiler interprets this as java code)
 useASM
 javax.swing.JFrame frame = new javax.swing.JFrame("Lol");
